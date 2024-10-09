@@ -7,6 +7,8 @@ import bcrypt from "bcrypt";
 import multer from "multer";
 import session from 'express-session';
 import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
 
@@ -31,8 +33,34 @@ app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-const upload = multer({ dest: 'uploads/' });
+// Get the directory name of the current module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
+// Define storage settings for multer
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/'); // Specify the destination directory for uploaded files
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname); // Save the file with its original name
+  }
+});
+
+// File filter to accept only PDF files
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === 'application/pdf') {
+    cb(null, true); // Accept the file
+  } else {
+    cb(new Error('Only PDF files are allowed!'), false); // Reject the file
+  }
+};
+
+// Initialize multer with the specified storage and file filter
+const upload = multer({ 
+  storage: storage,
+  fileFilter: fileFilter,
+});
 
 // GET ROUTE FOR SIGN-UP
 app.get('/sign-up', (req, res) => {
@@ -127,6 +155,98 @@ app.get('/download_homework', async (req, res) => {
 app.get('/upload_homework', async (req, res) => {
   res.render('upload_homework'); 
 });
+
+//GET ROUTE FOR PRIMARY ONE UPLOAD HOMEWORK
+app.get('/primary-one-subjects-select', async (req, res) => {
+  res.render('primary-one'); 
+});
+
+//GET ROUTE FOR PRIMARY ONE MATH UPLOAD HOMEWORK
+app.get('/upload-math-primary-one', async (req, res) => {
+  try {
+    // Retrieve homework uploads from the database
+    const query = `SELECT * FROM homework_uploads ORDER BY upload_date DESC;`;
+    const result = await db.query(query);
+
+    res.render('upload-primary-one-math-homework', {
+      uploadedHomework: result.rows, // Pass the uploaded homework data to the template
+      success: req.query.success // Pass success message if it exists
+    });
+  } catch (err) {
+    console.error('Error fetching uploaded homework:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+// POST ROUTE FOR PRIMARY ONE MATH UPLOAD HOMEWORK
+app.post('/upload-homework', upload.single('homeworkFile'), async (req, res) => {
+  const uploadDate = req.body.uploadDate;
+  const filePath = req.file.path; // The path where the file is saved
+  const originalFileName = req.file.originalname; // The original name of the uploaded file
+
+  try {
+    // Save the file information to the database
+    const query = `
+      INSERT INTO homework_uploads (upload_date, file_path, original_file_name)
+      VALUES ($1, $2, $3);
+    `;
+    const values = [uploadDate, filePath, originalFileName];
+
+    await db.query(query, values);
+
+    // Redirect back to the upload page with a success message
+    res.redirect('/upload-math-primary-one?success=true');
+  } catch (err) {
+    console.error('Error uploading homework:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+// POST ROUTE FOR DOWNLOADING THE HOMEWORK
+app.post('/download-homework', (req, res) => {
+  const filePath = req.body.filePath;
+
+  // Log the file path received
+  console.log('File path received for download:', filePath);
+
+  // Get the absolute path of the file
+  const absolutePath = path.join(__dirname, filePath);
+
+  // Check if the file exists
+  fs.access(absolutePath, fs.constants.F_OK, (err) => {
+    if (err) {
+      console.error('File not found:', err);
+      return res.status(404).send('File not found');
+    }
+
+    // Set the content type to application/pdf
+    res.setHeader('Content-Type', 'application/pdf');
+
+    // If file exists, send it for download
+    res.download(absolutePath, (err) => {
+      if (err) {
+        console.error('Error downloading file:', err);
+        return res.status(500).send('Error downloading file');
+      }
+    });
+  });
+});
+
+// GET ROUTE FOR PRIMARY ONE ENGLISH UPLOAD HOMEWORK
+app.get('/upload-eng-primary-one', async (req, res) => {
+  res.render('primary-one-english'); 
+});
+
+// GET ROUTE FOR PRIMARY ONE SCIENCE UPLOAD HOMEWORK
+app.get('/upload-sci-primary-one', async (req, res) => {
+  res.render('primary-one-english'); 
+});
+
+// GET ROUTE FOR PRIMARY ONE SOCIAL STUDIES UPLOAD HOMEWORK
+app.get('/upload-sst-primary-one', async (req, res) => {
+  res.render('primary-one-social-studies'); 
+});
+
 
 // START THE SERVER
 app.listen(port, () => {
