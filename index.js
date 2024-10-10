@@ -698,6 +698,177 @@ app.post('/upload-sst-homework-primary-three', upload.single('homeworkFile'), as
   }
 });
 
+// PRIMARY THREE TEACHERS UPLOAD ROUTES FOR ALL FOUR SUBJECTS
+
+//GET ROUTE FOR PRIMARY THREE SELECT SUBJECTS
+app.get('/primary-three-subjects-select', async (req, res) => {
+  res.render('primary-three'); 
+});
+
+//GET ROUTE FOR PRIMARY THREE MATHEMATICS UPLOAD HOMEWORK
+app.get('/upload-math-primary-three', async (req, res) => {
+  try {
+    // Retrieve homework uploads from the database
+    const query = `SELECT * FROM primary_three_mathematics_homework_uploads ORDER BY upload_date DESC;`;
+    const result = await db.query(query);
+
+    res.render('upload-primary-three-math', {
+      uploadedHomework: result.rows, // Pass the uploaded homework data to the template
+      success: req.query.success // Pass success message if it exists
+    });
+  } catch (err) {
+    console.error('Error fetching uploaded homework:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+// POST ROUTE FOR PRIMARY THREE MATHEMATICS UPLOAD HOMEWORK
+app.post('/upload-math-homework-primary-three', upload.single('homeworkFile'), async (req, res) => {
+  const uploadDate = req.body.uploadDate;
+  const filePath = req.file.path; // The path where the file is saved
+  const originalFileName = req.file.originalname; // The original name of the uploaded file
+
+  try {
+    // Save the file information to the database
+    const query = `
+      INSERT INTO primary_three_mathematics_homework_uploads (upload_date, file_path, original_file_name)
+      VALUES ($1, $2, $3);
+    `;
+    const values = [uploadDate, filePath, originalFileName];
+
+    await db.query(query, values);
+
+    // Redirect back to the upload page with a success message
+    res.redirect('/upload-math-primary-three?success=true');
+  } catch (err) {
+    console.error('Error uploading homework:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+//GET ROUTE FOR PRIMARY THREE ENGLISH UPLOAD HOMEWORK
+app.get('/upload-eng-primary-three', async (req, res) => {
+  try {
+    // Retrieve homework uploads from the database
+    const query = `SELECT * FROM primary_three_english_homework_uploads ORDER BY upload_date DESC;`;
+    const result = await db.query(query);
+
+    res.render('upload-primary-three-eng', {
+      uploadedHomework: result.rows, // Pass the uploaded homework data to the template
+      success: req.query.success // Pass success message if it exists
+    });
+  } catch (err) {
+    console.error('Error fetching uploaded homework:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+// POST ROUTE FOR PRIMARY THREE ENGLISH UPLOAD HOMEWORK
+app.post('/upload-eng-homework-primary-three', upload.single('homeworkFile'), async (req, res) => {
+  const uploadDate = req.body.uploadDate;
+  const filePath = req.file.path; // The path where the file is saved
+  const originalFileName = req.file.originalname; // The original name of the uploaded file
+
+  try {
+    // Save the file information to the database
+    const query = `
+      INSERT INTO primary_three_english_homework_uploads (upload_date, file_path, original_file_name)
+      VALUES ($1, $2, $3);
+    `;
+    const values = [uploadDate, filePath, originalFileName];
+
+    await db.query(query, values);
+
+    // Redirect back to the upload page with a success message
+    res.redirect('/upload-eng-primary-three?success=true');
+  } catch (err) {
+    console.error('Error uploading homework:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+//GET ROUTE FOR PRIMARY THREE SCIENCE UPLOAD HOMEWORK
+app.get('/upload-sci-primary-three', async (req, res) => {
+  try {
+    // Retrieve homework uploads from the database
+    const query = `SELECT * FROM primary_three_science_homework_uploads ORDER BY upload_date DESC;`;
+    const result = await db.query(query);
+
+    res.render('upload-primary-three-sci', {
+      uploadedHomework: result.rows, // Pass the uploaded homework data to the template
+      success: req.query.success // Pass success message if it exists
+    });
+  } catch (err) {
+    console.error('Error fetching uploaded homework:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+// POST ROUTE FOR PRIMARY THREE SCIENCE UPLOAD HOMEWORK
+app.post('/upload-sci-homework-primary-three', upload.single('homeworkFile'), async (req, res) => {
+  const uploadDate = req.body.uploadDate;
+  const filePath = req.file.path; // The path where the file is saved
+  const originalFileName = req.file.originalname; // The original name of the uploaded file
+
+  try {
+    // Save the file information to the database
+    const query = `
+      INSERT INTO primary_three_science_homework_uploads (upload_date, file_path, original_file_name)
+      VALUES ($1, $2, $3);
+    `;
+    const values = [uploadDate, filePath, originalFileName];
+
+    await db.query(query, values);
+
+    // Redirect back to the upload page with a success message
+    res.redirect('/upload-sci-primary-three?success=true');
+  } catch (err) {
+    console.error('Error uploading homework:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+//GET ROUTE FOR PRIMARY THREE SOCIAL STUDIES UPLOAD HOMEWORK
+app.get('/upload-sst-primary-three', async (req, res) => {
+  try {
+    // Retrieve homework uploads from the database
+    const query = `SELECT * FROM primary_three_social_studies_homework_uploads ORDER BY upload_date DESC;`;
+    const result = await db.query(query);
+
+    res.render('upload-primary-three-sst', {
+      uploadedHomework: result.rows, // Pass the uploaded homework data to the template
+      success: req.query.success // Pass success message if it exists
+    });
+  } catch (err) {
+    console.error('Error fetching uploaded homework:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+// POST ROUTE FOR PRIMARY THREE SOCIAL STUDIES UPLOAD HOMEWORK
+app.post('/upload-sst-homework-primary-three', upload.single('homeworkFile'), async (req, res) => {
+  const uploadDate = req.body.uploadDate;
+  const filePath = req.file.path; // The path where the file is saved
+  const originalFileName = req.file.originalname; // The original name of the uploaded file
+
+  try {
+    // Save the file information to the database
+    const query = `
+      INSERT INTO primary_three_social_studies_homework_uploads (upload_date, file_path, original_file_name)
+      VALUES ($1, $2, $3);
+    `;
+    const values = [uploadDate, filePath, originalFileName];
+
+    await db.query(query, values);
+
+    // Redirect back to the upload page with a success message
+    res.redirect('/upload-sst-primary-three?success=true');
+  } catch (err) {
+    console.error('Error uploading homework:', err);
+    res.status(500).send('Server error');
+  }
+});
+
 // PRIMARY FOUR TEACHERS UPLOAD ROUTES FOR ALL FOUR SUBJECTS
 
 //GET ROUTE FOR PRIMARY FOUR SELECT SUBJECTS
