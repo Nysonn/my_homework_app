@@ -151,57 +151,6 @@ app.get('/download_homework', async (req, res) => {
   res.render('download_homework'); 
 });
 
-// GET ROUTE FOR THE UPLOAD HOMEWORK
-app.get('/upload_homework', async (req, res) => {
-  res.render('upload_homework'); 
-});
-
-//GET ROUTE FOR PRIMARY ONE UPLOAD HOMEWORK
-app.get('/primary-one-subjects-select', async (req, res) => {
-  res.render('primary-one'); 
-});
-
-//GET ROUTE FOR PRIMARY ONE MATH UPLOAD HOMEWORK
-app.get('/upload-math-primary-one', async (req, res) => {
-  try {
-    // Retrieve homework uploads from the database
-    const query = `SELECT * FROM homework_uploads ORDER BY upload_date DESC;`;
-    const result = await db.query(query);
-
-    res.render('upload-primary-one-math-homework', {
-      uploadedHomework: result.rows, // Pass the uploaded homework data to the template
-      success: req.query.success // Pass success message if it exists
-    });
-  } catch (err) {
-    console.error('Error fetching uploaded homework:', err);
-    res.status(500).send('Server error');
-  }
-});
-
-// POST ROUTE FOR PRIMARY ONE MATH UPLOAD HOMEWORK
-app.post('/upload-homework', upload.single('homeworkFile'), async (req, res) => {
-  const uploadDate = req.body.uploadDate;
-  const filePath = req.file.path; // The path where the file is saved
-  const originalFileName = req.file.originalname; // The original name of the uploaded file
-
-  try {
-    // Save the file information to the database
-    const query = `
-      INSERT INTO homework_uploads (upload_date, file_path, original_file_name)
-      VALUES ($1, $2, $3);
-    `;
-    const values = [uploadDate, filePath, originalFileName];
-
-    await db.query(query, values);
-
-    // Redirect back to the upload page with a success message
-    res.redirect('/upload-math-primary-one?success=true');
-  } catch (err) {
-    console.error('Error uploading homework:', err);
-    res.status(500).send('Server error');
-  }
-});
-
 // POST ROUTE FOR DOWNLOADING THE HOMEWORK
 app.post('/download-homework', (req, res) => {
   const filePath = req.body.filePath;
@@ -232,21 +181,174 @@ app.post('/download-homework', (req, res) => {
   });
 });
 
-// GET ROUTE FOR PRIMARY ONE ENGLISH UPLOAD HOMEWORK
+//GET ROUTE FOR PRIMARY ONE SELECT SUBJECTS
+app.get('/primary-one-subjects-select', async (req, res) => {
+  res.render('primary-one'); 
+});
+
+//GET ROUTE FOR PRIMARY ONE MATH UPLOAD HOMEWORK
+app.get('/upload-math-primary-one', async (req, res) => {
+  try {
+    // Retrieve homework uploads from the database
+    const query = `SELECT * FROM primary_one_mathematics_homework_uploads ORDER BY upload_date DESC;`;
+    const result = await db.query(query);
+
+    res.render('upload-primary-one-math-homework', {
+      uploadedHomework: result.rows, // Pass the uploaded homework data to the template
+      success: req.query.success // Pass success message if it exists
+    });
+  } catch (err) {
+    console.error('Error fetching uploaded homework:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+// POST ROUTE FOR PRIMARY ONE MATH UPLOAD HOMEWORK
+app.post('/upload-mathematics-homework', upload.single('homeworkFile'), async (req, res) => {
+  const uploadDate = req.body.uploadDate;
+  const filePath = req.file.path; // The path where the file is saved
+  const originalFileName = req.file.originalname; // The original name of the uploaded file
+
+  try {
+    // Save the file information to the database
+    const query = `
+      INSERT INTO primary_one_mathematics_homework_uploads (upload_date, file_path, original_file_name)
+      VALUES ($1, $2, $3);
+    `;
+    const values = [uploadDate, filePath, originalFileName];
+
+    await db.query(query, values);
+
+    // Redirect back to the upload page with a success message
+    res.redirect('/upload-math-primary-one?success=true');
+  } catch (err) {
+    console.error('Error uploading homework:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+//GET ROUTE FOR PRIMARY ONE ENGLISH UPLOAD HOMEWORK
 app.get('/upload-eng-primary-one', async (req, res) => {
-  res.render('primary-one-english'); 
+  try {
+    // Retrieve homework uploads from the database
+    const query = `SELECT * FROM primary_one_english_homework_uploads ORDER BY upload_date DESC;`;
+    const result = await db.query(query);
+
+    res.render('upload-primary-one-eng-homework', {
+      uploadedHomework: result.rows, // Pass the uploaded homework data to the template
+      success: req.query.success // Pass success message if it exists
+    });
+  } catch (err) {
+    console.error('Error fetching uploaded homework:', err);
+    res.status(500).send('Server error');
+  }
 });
 
-// GET ROUTE FOR PRIMARY ONE SCIENCE UPLOAD HOMEWORK
+// POST ROUTE FOR PRIMARY ONE ENGLISH UPLOAD HOMEWORK
+app.post('/upload-english-homework', upload.single('homeworkFile'), async (req, res) => {
+  const uploadDate = req.body.uploadDate;
+  const filePath = req.file.path; // The path where the file is saved
+  const originalFileName = req.file.originalname; // The original name of the uploaded file
+
+  try {
+    // Save the file information to the database
+    const query = `
+      INSERT INTO primary_one_english_homework_uploads (upload_date, file_path, original_file_name)
+      VALUES ($1, $2, $3);
+    `;
+    const values = [uploadDate, filePath, originalFileName];
+
+    await db.query(query, values);
+
+    // Redirect back to the upload page with a success message
+    res.redirect('/upload-eng-primary-one?success=true');
+  } catch (err) {
+    console.error('Error uploading homework:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+//GET ROUTE FOR PRIMARY ONE SCIENCE UPLOAD HOMEWORK
 app.get('/upload-sci-primary-one', async (req, res) => {
-  res.render('primary-one-english'); 
+  try {
+    // Retrieve homework uploads from the database
+    const query = `SELECT * FROM primary_one_science_homework_uploads ORDER BY upload_date DESC;`;
+    const result = await db.query(query);
+
+    res.render('upload-primary-one-sci-homework', {
+      uploadedHomework: result.rows, // Pass the uploaded homework data to the template
+      success: req.query.success // Pass success message if it exists
+    });
+  } catch (err) {
+    console.error('Error fetching uploaded homework:', err);
+    res.status(500).send('Server error');
+  }
 });
 
-// GET ROUTE FOR PRIMARY ONE SOCIAL STUDIES UPLOAD HOMEWORK
+// POST ROUTE FOR PRIMARY ONE SCIENCE UPLOAD HOMEWORK
+app.post('/upload-science-homework', upload.single('homeworkFile'), async (req, res) => {
+  const uploadDate = req.body.uploadDate;
+  const filePath = req.file.path; // The path where the file is saved
+  const originalFileName = req.file.originalname; // The original name of the uploaded file
+
+  try {
+    // Save the file information to the database
+    const query = `
+      INSERT INTO primary_one_science_homework_uploads (upload_date, file_path, original_file_name)
+      VALUES ($1, $2, $3);
+    `;
+    const values = [uploadDate, filePath, originalFileName];
+
+    await db.query(query, values);
+
+    // Redirect back to the upload page with a success message
+    res.redirect('/upload-sci-primary-one?success=true');
+  } catch (err) {
+    console.error('Error uploading homework:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+//GET ROUTE FOR PRIMARY ONE SST UPLOAD HOMEWORK
 app.get('/upload-sst-primary-one', async (req, res) => {
-  res.render('primary-one-social-studies'); 
+  try {
+    // Retrieve homework uploads from the database
+    const query = `SELECT * FROM primary_one_social_studies_homework_uploads ORDER BY upload_date DESC;`;
+    const result = await db.query(query);
+
+    res.render('upload-primary-one-sst-homework', {
+      uploadedHomework: result.rows, // Pass the uploaded homework data to the template
+      success: req.query.success // Pass success message if it exists
+    });
+  } catch (err) {
+    console.error('Error fetching uploaded homework:', err);
+    res.status(500).send('Server error');
+  }
 });
 
+// POST ROUTE FOR PRIMARY ONE SST UPLOAD HOMEWORK
+app.post('/upload-sst-homework', upload.single('homeworkFile'), async (req, res) => {
+  const uploadDate = req.body.uploadDate;
+  const filePath = req.file.path; // The path where the file is saved
+  const originalFileName = req.file.originalname; // The original name of the uploaded file
+
+  try {
+    // Save the file information to the database
+    const query = `
+      INSERT INTO primary_one_social_studies_homework_uploads (upload_date, file_path, original_file_name)
+      VALUES ($1, $2, $3);
+    `;
+    const values = [uploadDate, filePath, originalFileName];
+
+    await db.query(query, values);
+
+    // Redirect back to the upload page with a success message
+    res.redirect('/upload-sst-primary-one?success=true');
+  } catch (err) {
+    console.error('Error uploading homework:', err);
+    res.status(500).send('Server error');
+  }
+});
 
 // START THE SERVER
 app.listen(port, () => {
