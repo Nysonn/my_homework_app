@@ -62,24 +62,37 @@ const upload = multer({
   fileFilter: fileFilter,
 });
 
-// Add this after requiring express and other dependencies
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
-  cookie: { maxAge: 60 * 60 * 1000 } 
+  cookie: { maxAge: 60 * 60 * 1000 } // 1 hour
 }));
 
-//MIDDLEWARE TO CHECK THE ROLE
-function checkAuthentication(req, res, next) {
-  if (req.session && req.session.userId) {
-    // User is authenticated
+
+//MIDDLEWARE TO CHECK THE ROLE OF THE USER
+
+
+// Middleware to check if the user is a teacher
+function isTeacher(req, res, next) {
+  console.log("User role in session:", req.session.role);
+  if (req.session.role === 'teacher') {
     return next();
   } else {
-    // User is not authenticated, redirect to login
-    res.redirect('/login');
+    return res.status(403).send('Access denied. Only teachers can upload homework.');
   }
 }
+
+// Middleware to check if the user is a parent
+function isParent(req, res, next) {
+  console.log("User role in session:", req.session.role);
+  if (req.session.role === 'parent') {
+    return next();
+  } else {
+    return res.status(403).send('Access denied.');
+  }
+}
+
 
 // GET ROUTE FOR SIGN-UP
 app.get('/sign-up', (req, res) => {
@@ -116,7 +129,7 @@ app.get('/login', (req, res) => {
 // POST ROUTE FOR LOGIN WITH ROLE CHECK
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
-
+  
   try {
     const query = `SELECT * FROM users WHERE username = $1`;
     const result = await db.query(query, [username]);
@@ -126,27 +139,29 @@ app.post('/login', async (req, res) => {
     }
 
     const user = result.rows[0];
-    
-    // Log the user role for debugging
-    console.log("User role:", user.role);
-
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
       return res.status(400).send('Invalid username or password.');
     }
 
-    // Ensure case-insensitive role checking
-    const userRole = user.role.toLowerCase();
+    // Store user role and ID in session
+    req.session.userId = user.id;
+    req.session.role = user.role.toLowerCase();  // Case-insensitive role checking
 
-    // Role-based redirection
-    if (userRole === 'teacher') {
+     // Log the session details for debugging
+     console.log('User logged in:', {
+      id: req.session.userId,
+      role: req.session.role
+    });
+
+    // Redirect based on role
+    if (req.session.role === 'teacher') {
       return res.redirect('/teachers');
-    } else if (userRole === 'parent') {
+    } else if (req.session.role === 'parent') {
       return res.redirect('/parents');
     } else {
-      // Fallback for other roles
-      return res.status(400).send('User role is not recognized.');
+      return res.status(400).send('User role not recognized.');
     }
 
   } catch (err) {
@@ -155,14 +170,41 @@ app.post('/login', async (req, res) => {
   }
 });
 
+
 // GET ROUTE FOR TEACHER'S DASHBOARD
-app.get('/teachers', async (req, res) => {
-  res.render('teachers'); 
+app.get('/teachers', isTeacher, async (req, res) => {
+  try {
+    // Retrieve homework uploads from the database specific to the teacher if needed
+    const query = `SELECT * FROM primary_one_mathematics_homework_uploads ORDER BY upload_date DESC;`;
+    const result = await db.query(query);
+
+    res.render('teachers', {
+      uploadedHomework: result.rows,
+      success: req.query.success,
+      userRole: req.session.role
+    });
+  } catch (err) {
+    console.error('Error fetching uploaded homework:', err);
+    res.status(500).send('Server error');
+  }
 });
 
 // GET ROUTE FOR THE PARENT DASHBOARD
-app.get('/parents', async (req, res) => {
-  res.render('parents'); 
+app.get('/parents', isParent, async (req, res) => {
+  try {
+    // Parents might want to see all homework uploads
+    const query = `SELECT * FROM primary_one_mathematics_homework_uploads ORDER BY upload_date DESC;`;
+    const result = await db.query(query);
+
+    res.render('parents', {
+      uploadedHomework: result.rows,
+      success: req.query.success,
+      userRole: req.session.role
+    });
+  } catch (err) {
+    console.error('Error fetching uploaded homework:', err);
+    res.status(500).send('Server error');
+  }
 });
 
 // GET ROUTE FOR THE DOWNLOAD HOMEWORK
@@ -204,13 +246,18 @@ app.post('/download-homework', (req, res) => {
 // PRIMARY ONE TEACHERS UPLOAD ROUTES FOR ALL FOUR SUBJECTS
 
 
-//GET ROUTE FOR PRIMARY ONE SELECT SUBJECTS
+//GET ROUTE FOR PRIMARY ONE SELECT SUBJECTS (TEACHERS)
 app.get('/primary-one-subjects-select', async (req, res) => {
   res.render('primary-one'); 
 });
 
-//GET ROUTE FOR PRIMARY ONE MATH UPLOAD HOMEWORK
-app.get('/upload-math-primary-one', async (req, res) => {
+//GET ROUTE FOR PRIMARY ONE SELECT SUBJECTS (PARENTS)
+app.get('/primary-one-subjects-select-parents', async (req, res) => {
+  res.render('download-primary-one'); 
+});
+
+//GET ROUTE FOR PRIMARY ONE MATH UPLOAD HOMEWORK (TEACHERS)
+app.get('/upload-math-primary-one', isTeacher, async (req, res) => {
   try {
     // Retrieve homework uploads from the database
     const query = `SELECT * FROM primary_one_mathematics_homework_uploads ORDER BY upload_date DESC;`;
@@ -218,7 +265,26 @@ app.get('/upload-math-primary-one', async (req, res) => {
 
     res.render('upload-primary-one-math-homework', {
       uploadedHomework: result.rows, // Pass the uploaded homework data to the template
-      success: req.query.success // Pass success message if it exists
+      success: req.query.success,
+      userRole: req.session.role 
+    });
+  } catch (err) {
+    console.error('Error fetching uploaded homework:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+//GET ROUTE FOR PRIMARY ONE MATH DOWNLOAD HOMEWORK (PARENTS)
+app.get('/download-math-primary-one', isParent, async (req, res) => {
+  try {
+    // Retrieve homework uploads from the database
+    const query = `SELECT * FROM primary_one_mathematics_homework_uploads ORDER BY upload_date DESC;`;
+    const result = await db.query(query);
+
+    res.render('upload-primary-one-math-homework', {
+      uploadedHomework: result.rows, // Pass the uploaded homework data to the template
+      success: req.query.success,
+      userRole: req.session.role 
     });
   } catch (err) {
     console.error('Error fetching uploaded homework:', err);
@@ -259,7 +325,26 @@ app.get('/upload-eng-primary-one', async (req, res) => {
 
     res.render('upload-primary-one-eng-homework', {
       uploadedHomework: result.rows, // Pass the uploaded homework data to the template
-      success: req.query.success // Pass success message if it exists
+      success: req.query.success,
+      userRole: req.session.role 
+    });
+  } catch (err) {
+    console.error('Error fetching uploaded homework:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+//GET ROUTE FOR PRIMARY ONE ENGLISH DOWNLOAD HOMEWORK (PARENTS)
+app.get('/download-eng-primary-one', isParent, async (req, res) => {
+  try {
+    // Retrieve homework uploads from the database
+    const query = `SELECT * FROM primary_one_english_homework_uploads ORDER BY upload_date DESC;`;
+    const result = await db.query(query);
+
+    res.render('upload-primary-one-eng-homework', {
+      uploadedHomework: result.rows, 
+      success: req.query.success,
+      userRole: req.session.role 
     });
   } catch (err) {
     console.error('Error fetching uploaded homework:', err);
@@ -300,7 +385,26 @@ app.get('/upload-sci-primary-one', async (req, res) => {
 
     res.render('upload-primary-one-sci-homework', {
       uploadedHomework: result.rows, // Pass the uploaded homework data to the template
-      success: req.query.success // Pass success message if it exists
+      success: req.query.success,
+      userRole: req.session.role 
+    });
+  } catch (err) {
+    console.error('Error fetching uploaded homework:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+//GET ROUTE FOR PRIMARY ONE SCIENCE DOWNLOAD HOMEWORK (PARENTS)
+app.get('/download-sci-primary-one', isParent, async (req, res) => {
+  try {
+    // Retrieve homework uploads from the database
+    const query = `SELECT * FROM primary_one_science_homework_uploads ORDER BY upload_date DESC;`;
+    const result = await db.query(query);
+
+    res.render('upload-primary-one-sci-homework', {
+      uploadedHomework: result.rows, 
+      success: req.query.success,
+      userRole: req.session.role 
     });
   } catch (err) {
     console.error('Error fetching uploaded homework:', err);
@@ -341,7 +445,26 @@ app.get('/upload-sst-primary-one', async (req, res) => {
 
     res.render('upload-primary-one-sst-homework', {
       uploadedHomework: result.rows, // Pass the uploaded homework data to the template
-      success: req.query.success // Pass success message if it exists
+      success: req.query.success,
+      userRole: req.session.role 
+    });
+  } catch (err) {
+    console.error('Error fetching uploaded homework:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+//GET ROUTE FOR PRIMARY ONE SST DOWNLOAD HOMEWORK (PARENTS)
+app.get('/download-sst-primary-one', isParent, async (req, res) => {
+  try {
+    // Retrieve homework uploads from the database
+    const query = `SELECT * FROM primary_one_social_studies_homework_uploads ORDER BY upload_date DESC;`;
+    const result = await db.query(query);
+
+    res.render('upload-primary-one-sst-homework', {
+      uploadedHomework: result.rows, 
+      success: req.query.success,
+      userRole: req.session.role 
     });
   } catch (err) {
     console.error('Error fetching uploaded homework:', err);
