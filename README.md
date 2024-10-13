@@ -12,10 +12,10 @@ A web portal designed for primary schools that allows teachers and parents to lo
 
 ## Tech Stack
 
-- **Frontend**: HTML, CSS, JavaScript (Vanilla Javascript)
+- **Frontend**: HTML, CSS, JavaScript 
 - **Backend**: Node.js, Express.js
-- **Database**: PostgreSQL (or any other database of your choice)
-- **Authentication**: Passport.js (or any preferred method for user authentication)
+- **Database**: PostgreSQL 
+- **Authentication**: Hashing with Bcrypt package
 
 ## Installation
 
