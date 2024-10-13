@@ -504,6 +504,11 @@ app.get('/primary-two-subjects-select', async (req, res) => {
   res.render('primary-two'); 
 });
 
+//GET ROUTE FOR PRIMARY TWO SELECT SUBJECTS (PARENTS)
+app.get('/primary-two-subjects-select-parents', async (req, res) => {
+  res.render('download-primary-two'); 
+});
+
 //GET ROUTE FOR PRIMARY TWO ENGLISH UPLOAD HOMEWORK
 app.get('/upload-eng-primary-two', async (req, res) => {
   try {
@@ -512,8 +517,27 @@ app.get('/upload-eng-primary-two', async (req, res) => {
     const result = await db.query(query);
 
     res.render('upload-primary-two-eng-homework', {
-      uploadedHomework: result.rows, // Pass the uploaded homework data to the template
-      success: req.query.success // Pass success message if it exists
+      uploadedHomework: result.rows, 
+      success: req.query.success,
+      userRole: req.session.role
+    });
+  } catch (err) {
+    console.error('Error fetching uploaded homework:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+//GET ROUTE FOR PRIMARY TWO ENGLISH DOWNLOAD HOMEWORK (PARENTS)
+app.get('/download-eng-primary-two', isParent, async (req, res) => {
+  try {
+    // Retrieve homework uploads from the database
+    const query = `SELECT * FROM primary_two_english_homework_uploads ORDER BY upload_date DESC;`;
+    const result = await db.query(query);
+
+    res.render('upload-primary-one-eng-homework', {
+      uploadedHomework: result.rows, 
+      success: req.query.success,
+      userRole: req.session.role 
     });
   } catch (err) {
     console.error('Error fetching uploaded homework:', err);
@@ -554,7 +578,26 @@ app.get('/upload-math-primary-two', async (req, res) => {
 
     res.render('upload-primary-two-math-homework', {
       uploadedHomework: result.rows, // Pass the uploaded homework data to the template
-      success: req.query.success // Pass success message if it exists
+      success: req.query.success,
+      userRole: req.session.role 
+    });
+  } catch (err) {
+    console.error('Error fetching uploaded homework:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+//GET ROUTE FOR PRIMARY TWO MATHEMATICS DOWNLOAD HOMEWORK (PARENTS)
+app.get('/download-math-primary-two', isParent, async (req, res) => {
+  try {
+    // Retrieve homework uploads from the database
+    const query = `SELECT * FROM primary_two_mathematics_homework_uploads ORDER BY upload_date DESC;`;
+    const result = await db.query(query);
+
+    res.render('upload-primary-one-math-homework', {
+      uploadedHomework: result.rows, 
+      success: req.query.success,
+      userRole: req.session.role 
     });
   } catch (err) {
     console.error('Error fetching uploaded homework:', err);
@@ -596,7 +639,26 @@ app.get('/upload-sci-primary-two', async (req, res) => {
 
     res.render('upload-primary-two-sci-homework', {
       uploadedHomework: result.rows, // Pass the uploaded homework data to the template
-      success: req.query.success // Pass success message if it exists
+      success: req.query.success,
+      userRole: req.session.role 
+    });
+  } catch (err) {
+    console.error('Error fetching uploaded homework:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+//GET ROUTE FOR PRIMARY TWO SCIENCE DOWNLOAD HOMEWORK (PARENTS)
+app.get('/download-sci-primary-two', isParent, async (req, res) => {
+  try {
+    // Retrieve homework uploads from the database
+    const query = `SELECT * FROM primary_two_science_homework_uploads ORDER BY upload_date DESC;`;
+    const result = await db.query(query);
+
+    res.render('upload-primary-one-sci-homework', {
+      uploadedHomework: result.rows, 
+      success: req.query.success,
+      userRole: req.session.role 
     });
   } catch (err) {
     console.error('Error fetching uploaded homework:', err);
@@ -637,7 +699,26 @@ app.get('/upload-sst-primary-two', async (req, res) => {
 
     res.render('upload-primary-two-sst-homework', {
       uploadedHomework: result.rows, // Pass the uploaded homework data to the template
-      success: req.query.success // Pass success message if it exists
+      success: req.query.success,
+      userRole: req.session.role 
+    });
+  } catch (err) {
+    console.error('Error fetching uploaded homework:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+//GET ROUTE FOR PRIMARY TWO SOCIAL STUDIES DOWNLOAD HOMEWORK (PARENTS)
+app.get('/download-sst-primary-two', isParent, async (req, res) => {
+  try {
+    // Retrieve homework uploads from the database
+    const query = `SELECT * FROM primary_two_social_studies_homework_uploads ORDER BY upload_date DESC;`;
+    const result = await db.query(query);
+
+    res.render('upload-primary-one-sst-homework', {
+      uploadedHomework: result.rows, 
+      success: req.query.success,
+      userRole: req.session.role 
     });
   } catch (err) {
     console.error('Error fetching uploaded homework:', err);
@@ -676,6 +757,11 @@ app.get('/primary-three-subjects-select', async (req, res) => {
   res.render('primary-three'); 
 });
 
+//GET ROUTE FOR PRIMARY THREE SELECT SUBJECTS (PARENTS)
+app.get('/primary-three-subjects-select-parents', async (req, res) => {
+  res.render('download-primary-three'); 
+});
+
 //GET ROUTE FOR PRIMARY THREE MATHEMATICS UPLOAD HOMEWORK
 app.get('/upload-math-primary-three', async (req, res) => {
   try {
@@ -685,7 +771,26 @@ app.get('/upload-math-primary-three', async (req, res) => {
 
     res.render('upload-primary-three-math', {
       uploadedHomework: result.rows, // Pass the uploaded homework data to the template
-      success: req.query.success // Pass success message if it exists
+      success: req.query.success,
+      userRole: req.session.role 
+    });
+  } catch (err) {
+    console.error('Error fetching uploaded homework:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+//GET ROUTE FOR PRIMARY THREE MATHEMATICS DOWNLOAD HOMEWORK (PARENTS)
+app.get('/download-math-primary-three', isParent, async (req, res) => {
+  try {
+    // Retrieve homework uploads from the database
+    const query = `SELECT * FROM primary_three_mathematics_homework_uploads ORDER BY upload_date DESC;`;
+    const result = await db.query(query);
+
+    res.render('upload-primary-one-math-homework', {
+      uploadedHomework: result.rows, 
+      success: req.query.success,
+      userRole: req.session.role 
     });
   } catch (err) {
     console.error('Error fetching uploaded homework:', err);
@@ -726,7 +831,8 @@ app.get('/upload-eng-primary-three', async (req, res) => {
 
     res.render('upload-primary-three-eng', {
       uploadedHomework: result.rows, // Pass the uploaded homework data to the template
-      success: req.query.success // Pass success message if it exists
+      success: req.query.success,
+      userRole: req.session.role 
     });
   } catch (err) {
     console.error('Error fetching uploaded homework:', err);
@@ -734,170 +840,17 @@ app.get('/upload-eng-primary-three', async (req, res) => {
   }
 });
 
-// POST ROUTE FOR PRIMARY THREE ENGLISH UPLOAD HOMEWORK
-app.post('/upload-eng-homework-primary-three', upload.single('homeworkFile'), async (req, res) => {
-  const uploadDate = req.body.uploadDate;
-  const filePath = req.file.path; // The path where the file is saved
-  const originalFileName = req.file.originalname; // The original name of the uploaded file
-
-  try {
-    // Save the file information to the database
-    const query = `
-      INSERT INTO primary_three_english_homework_uploads (upload_date, file_path, original_file_name)
-      VALUES ($1, $2, $3);
-    `;
-    const values = [uploadDate, filePath, originalFileName];
-
-    await db.query(query, values);
-
-    // Redirect back to the upload page with a success message
-    res.redirect('/upload-eng-primary-three?success=true');
-  } catch (err) {
-    console.error('Error uploading homework:', err);
-    res.status(500).send('Server error');
-  }
-});
-
-//GET ROUTE FOR PRIMARY THREE SCIENCE UPLOAD HOMEWORK
-app.get('/upload-sci-primary-three', async (req, res) => {
-  try {
-    // Retrieve homework uploads from the database
-    const query = `SELECT * FROM primary_three_science_homework_uploads ORDER BY upload_date DESC;`;
-    const result = await db.query(query);
-
-    res.render('upload-primary-three-sci', {
-      uploadedHomework: result.rows, // Pass the uploaded homework data to the template
-      success: req.query.success // Pass success message if it exists
-    });
-  } catch (err) {
-    console.error('Error fetching uploaded homework:', err);
-    res.status(500).send('Server error');
-  }
-});
-
-// POST ROUTE FOR PRIMARY THREE SCIENCE UPLOAD HOMEWORK
-app.post('/upload-sci-homework-primary-three', upload.single('homeworkFile'), async (req, res) => {
-  const uploadDate = req.body.uploadDate;
-  const filePath = req.file.path; // The path where the file is saved
-  const originalFileName = req.file.originalname; // The original name of the uploaded file
-
-  try {
-    // Save the file information to the database
-    const query = `
-      INSERT INTO primary_three_science_homework_uploads (upload_date, file_path, original_file_name)
-      VALUES ($1, $2, $3);
-    `;
-    const values = [uploadDate, filePath, originalFileName];
-
-    await db.query(query, values);
-
-    // Redirect back to the upload page with a success message
-    res.redirect('/upload-sci-primary-three?success=true');
-  } catch (err) {
-    console.error('Error uploading homework:', err);
-    res.status(500).send('Server error');
-  }
-});
-
-//GET ROUTE FOR PRIMARY THREE SOCIAL STUDIES UPLOAD HOMEWORK
-app.get('/upload-sst-primary-three', async (req, res) => {
-  try {
-    // Retrieve homework uploads from the database
-    const query = `SELECT * FROM primary_three_social_studies_homework_uploads ORDER BY upload_date DESC;`;
-    const result = await db.query(query);
-
-    res.render('upload-primary-three-sst', {
-      uploadedHomework: result.rows, // Pass the uploaded homework data to the template
-      success: req.query.success // Pass success message if it exists
-    });
-  } catch (err) {
-    console.error('Error fetching uploaded homework:', err);
-    res.status(500).send('Server error');
-  }
-});
-
-// POST ROUTE FOR PRIMARY THREE SOCIAL STUDIES UPLOAD HOMEWORK
-app.post('/upload-sst-homework-primary-three', upload.single('homeworkFile'), async (req, res) => {
-  const uploadDate = req.body.uploadDate;
-  const filePath = req.file.path; // The path where the file is saved
-  const originalFileName = req.file.originalname; // The original name of the uploaded file
-
-  try {
-    // Save the file information to the database
-    const query = `
-      INSERT INTO primary_three_social_studies_homework_uploads (upload_date, file_path, original_file_name)
-      VALUES ($1, $2, $3);
-    `;
-    const values = [uploadDate, filePath, originalFileName];
-
-    await db.query(query, values);
-
-    // Redirect back to the upload page with a success message
-    res.redirect('/upload-sst-primary-three?success=true');
-  } catch (err) {
-    console.error('Error uploading homework:', err);
-    res.status(500).send('Server error');
-  }
-});
-
-// PRIMARY THREE TEACHERS UPLOAD ROUTES FOR ALL FOUR SUBJECTS
-
-//GET ROUTE FOR PRIMARY THREE SELECT SUBJECTS
-app.get('/primary-three-subjects-select', async (req, res) => {
-  res.render('primary-three'); 
-});
-
-//GET ROUTE FOR PRIMARY THREE MATHEMATICS UPLOAD HOMEWORK
-app.get('/upload-math-primary-three', async (req, res) => {
-  try {
-    // Retrieve homework uploads from the database
-    const query = `SELECT * FROM primary_three_mathematics_homework_uploads ORDER BY upload_date DESC;`;
-    const result = await db.query(query);
-
-    res.render('upload-primary-three-math', {
-      uploadedHomework: result.rows, // Pass the uploaded homework data to the template
-      success: req.query.success // Pass success message if it exists
-    });
-  } catch (err) {
-    console.error('Error fetching uploaded homework:', err);
-    res.status(500).send('Server error');
-  }
-});
-
-// POST ROUTE FOR PRIMARY THREE MATHEMATICS UPLOAD HOMEWORK
-app.post('/upload-math-homework-primary-three', upload.single('homeworkFile'), async (req, res) => {
-  const uploadDate = req.body.uploadDate;
-  const filePath = req.file.path; // The path where the file is saved
-  const originalFileName = req.file.originalname; // The original name of the uploaded file
-
-  try {
-    // Save the file information to the database
-    const query = `
-      INSERT INTO primary_three_mathematics_homework_uploads (upload_date, file_path, original_file_name)
-      VALUES ($1, $2, $3);
-    `;
-    const values = [uploadDate, filePath, originalFileName];
-
-    await db.query(query, values);
-
-    // Redirect back to the upload page with a success message
-    res.redirect('/upload-math-primary-three?success=true');
-  } catch (err) {
-    console.error('Error uploading homework:', err);
-    res.status(500).send('Server error');
-  }
-});
-
-//GET ROUTE FOR PRIMARY THREE ENGLISH UPLOAD HOMEWORK
-app.get('/upload-eng-primary-three', async (req, res) => {
+//GET ROUTE FOR PRIMARY THREE ENGLISH DOWNLOAD HOMEWORK (PARENTS)
+app.get('/download-eng-primary-three', isParent, async (req, res) => {
   try {
     // Retrieve homework uploads from the database
     const query = `SELECT * FROM primary_three_english_homework_uploads ORDER BY upload_date DESC;`;
     const result = await db.query(query);
 
-    res.render('upload-primary-three-eng', {
-      uploadedHomework: result.rows, // Pass the uploaded homework data to the template
-      success: req.query.success // Pass success message if it exists
+    res.render('upload-primary-one-eng-homework', {
+      uploadedHomework: result.rows, 
+      success: req.query.success,
+      userRole: req.session.role 
     });
   } catch (err) {
     console.error('Error fetching uploaded homework:', err);
@@ -938,7 +891,26 @@ app.get('/upload-sci-primary-three', async (req, res) => {
 
     res.render('upload-primary-three-sci', {
       uploadedHomework: result.rows, // Pass the uploaded homework data to the template
-      success: req.query.success // Pass success message if it exists
+      success: req.query.success,
+      userRole: req.session.role
+    });
+  } catch (err) {
+    console.error('Error fetching uploaded homework:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+//GET ROUTE FOR PRIMARY THREE SCIENCE DOWNLOAD HOMEWORK (PARENTS)
+app.get('/download-sci-primary-three', isParent, async (req, res) => {
+  try {
+    // Retrieve homework uploads from the database
+    const query = `SELECT * FROM primary_three_science_homework_uploads ORDER BY upload_date DESC;`;
+    const result = await db.query(query);
+
+    res.render('upload-primary-one-sci-homework', {
+      uploadedHomework: result.rows, 
+      success: req.query.success,
+      userRole: req.session.role 
     });
   } catch (err) {
     console.error('Error fetching uploaded homework:', err);
@@ -979,7 +951,26 @@ app.get('/upload-sst-primary-three', async (req, res) => {
 
     res.render('upload-primary-three-sst', {
       uploadedHomework: result.rows, // Pass the uploaded homework data to the template
-      success: req.query.success // Pass success message if it exists
+      success: req.query.success,
+      userRole: req.session.role 
+    });
+  } catch (err) {
+    console.error('Error fetching uploaded homework:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+//GET ROUTE FOR PRIMARY THREE SST DOWNLOAD HOMEWORK (PARENTS)
+app.get('/download-sst-primary-three', isParent, async (req, res) => {
+  try {
+    // Retrieve homework uploads from the database
+    const query = `SELECT * FROM primary_three_social_studies_homework_uploads ORDER BY upload_date DESC;`;
+    const result = await db.query(query);
+
+    res.render('upload-primary-one-sst-homework', {
+      uploadedHomework: result.rows, 
+      success: req.query.success,
+      userRole: req.session.role 
     });
   } catch (err) {
     console.error('Error fetching uploaded homework:', err);
@@ -1018,6 +1009,11 @@ app.get('/primary-four-subjects-select', async (req, res) => {
   res.render('primary-four'); 
 });
 
+//GET ROUTE FOR PRIMARY FOUR SELECT SUBJECTS (PARENTS)
+app.get('/primary-four-subjects-select-parents', async (req, res) => {
+  res.render('download-primary-four'); 
+});
+
 //GET ROUTE FOR PRIMARY FOUR MATHEMATICS UPLOAD HOMEWORK
 app.get('/upload-math-primary-four', async (req, res) => {
   try {
@@ -1027,7 +1023,26 @@ app.get('/upload-math-primary-four', async (req, res) => {
 
     res.render('upload-primary-four-math', {
       uploadedHomework: result.rows, // Pass the uploaded homework data to the template
-      success: req.query.success // Pass success message if it exists
+      success: req.query.success,
+      userRole: req.session.role 
+    });
+  } catch (err) {
+    console.error('Error fetching uploaded homework:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+//GET ROUTE FOR PRIMARY FOUR MATH DOWNLOAD HOMEWORK (PARENTS)
+app.get('/download-math-primary-four', isParent, async (req, res) => {
+  try {
+    // Retrieve homework uploads from the database
+    const query = `SELECT * FROM primary_four_mathematics_homework_uploads ORDER BY upload_date DESC;`;
+    const result = await db.query(query);
+
+    res.render('upload-primary-one-math-homework', {
+      uploadedHomework: result.rows, 
+      success: req.query.success,
+      userRole: req.session.role 
     });
   } catch (err) {
     console.error('Error fetching uploaded homework:', err);
@@ -1068,7 +1083,26 @@ app.get('/upload-eng-primary-four', async (req, res) => {
 
     res.render('upload-primary-four-eng', {
       uploadedHomework: result.rows, // Pass the uploaded homework data to the template
-      success: req.query.success // Pass success message if it exists
+      success: req.query.success,
+      userRole: req.session.role 
+    });
+  } catch (err) {
+    console.error('Error fetching uploaded homework:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+//GET ROUTE FOR PRIMARY FOUR ENGLISH DOWNLOAD HOMEWORK (PARENTS)
+app.get('/download-eng-primary-four', isParent, async (req, res) => {
+  try {
+    // Retrieve homework uploads from the database
+    const query = `SELECT * FROM primary_four_english_homework_uploads ORDER BY upload_date DESC;`;
+    const result = await db.query(query);
+
+    res.render('upload-primary-one-eng-homework', {
+      uploadedHomework: result.rows, 
+      success: req.query.success,
+      userRole: req.session.role 
     });
   } catch (err) {
     console.error('Error fetching uploaded homework:', err);
@@ -1109,7 +1143,26 @@ app.get('/upload-sci-primary-four', async (req, res) => {
 
     res.render('upload-primary-four-sci', {
       uploadedHomework: result.rows, // Pass the uploaded homework data to the template
-      success: req.query.success // Pass success message if it exists
+      success: req.query.success,
+      userRole: req.session.role 
+    });
+  } catch (err) {
+    console.error('Error fetching uploaded homework:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+//GET ROUTE FOR PRIMARY FOUR SCIENCE DOWNLOAD HOMEWORK (PARENTS)
+app.get('/download-sci-primary-four', isParent, async (req, res) => {
+  try {
+    // Retrieve homework uploads from the database
+    const query = `SELECT * FROM primary_four_science_homework_uploads ORDER BY upload_date DESC;`;
+    const result = await db.query(query);
+
+    res.render('upload-primary-one-sci-homework', {
+      uploadedHomework: result.rows, 
+      success: req.query.success,
+      userRole: req.session.role 
     });
   } catch (err) {
     console.error('Error fetching uploaded homework:', err);
@@ -1150,7 +1203,26 @@ app.get('/upload-sst-primary-four', async (req, res) => {
 
     res.render('upload-primary-four-sst', {
       uploadedHomework: result.rows, // Pass the uploaded homework data to the template
-      success: req.query.success // Pass success message if it exists
+      success: req.query.success,
+      userRole: req.session.role 
+    });
+  } catch (err) {
+    console.error('Error fetching uploaded homework:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+//GET ROUTE FOR PRIMARY FOUR SST DOWNLOAD HOMEWORK (PARENTS)
+app.get('/download-sst-primary-four', isParent, async (req, res) => {
+  try {
+    // Retrieve homework uploads from the database
+    const query = `SELECT * FROM primary_four_social_studies_homework_uploads ORDER BY upload_date DESC;`;
+    const result = await db.query(query);
+
+    res.render('upload-primary-one-sst-homework', {
+      uploadedHomework: result.rows, 
+      success: req.query.success,
+      userRole: req.session.role 
     });
   } catch (err) {
     console.error('Error fetching uploaded homework:', err);
