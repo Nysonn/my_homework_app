@@ -62,6 +62,25 @@ const upload = multer({
   fileFilter: fileFilter,
 });
 
+// Add this after requiring express and other dependencies
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { maxAge: 60 * 60 * 1000 } 
+}));
+
+//MIDDLEWARE TO CHECK THE ROLE
+function checkAuthentication(req, res, next) {
+  if (req.session && req.session.userId) {
+    // User is authenticated
+    return next();
+  } else {
+    // User is not authenticated, redirect to login
+    res.redirect('/login');
+  }
+}
+
 // GET ROUTE FOR SIGN-UP
 app.get('/sign-up', (req, res) => {
   res.render('sign-up'); 
