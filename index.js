@@ -534,7 +534,7 @@ app.get('/download-eng-primary-two', isParent, async (req, res) => {
     const query = `SELECT * FROM primary_two_english_homework_uploads ORDER BY upload_date DESC;`;
     const result = await db.query(query);
 
-    res.render('upload-primary-one-eng-homework', {
+    res.render('upload-primary-two-eng-homework', {
       uploadedHomework: result.rows, 
       success: req.query.success,
       userRole: req.session.role 
@@ -594,7 +594,7 @@ app.get('/download-math-primary-two', isParent, async (req, res) => {
     const query = `SELECT * FROM primary_two_mathematics_homework_uploads ORDER BY upload_date DESC;`;
     const result = await db.query(query);
 
-    res.render('upload-primary-one-math-homework', {
+    res.render('upload-primary-two-math-homework', {
       uploadedHomework: result.rows, 
       success: req.query.success,
       userRole: req.session.role 
@@ -655,7 +655,7 @@ app.get('/download-sci-primary-two', isParent, async (req, res) => {
     const query = `SELECT * FROM primary_two_science_homework_uploads ORDER BY upload_date DESC;`;
     const result = await db.query(query);
 
-    res.render('upload-primary-one-sci-homework', {
+    res.render('upload-primary-two-sci-homework', {
       uploadedHomework: result.rows, 
       success: req.query.success,
       userRole: req.session.role 
@@ -715,7 +715,7 @@ app.get('/download-sst-primary-two', isParent, async (req, res) => {
     const query = `SELECT * FROM primary_two_social_studies_homework_uploads ORDER BY upload_date DESC;`;
     const result = await db.query(query);
 
-    res.render('upload-primary-one-sst-homework', {
+    res.render('upload-primary-two-sst-homework', {
       uploadedHomework: result.rows, 
       success: req.query.success,
       userRole: req.session.role 
@@ -787,7 +787,7 @@ app.get('/download-math-primary-three', isParent, async (req, res) => {
     const query = `SELECT * FROM primary_three_mathematics_homework_uploads ORDER BY upload_date DESC;`;
     const result = await db.query(query);
 
-    res.render('upload-primary-one-math-homework', {
+    res.render('upload-primary-three-math', {
       uploadedHomework: result.rows, 
       success: req.query.success,
       userRole: req.session.role 
@@ -847,7 +847,7 @@ app.get('/download-eng-primary-three', isParent, async (req, res) => {
     const query = `SELECT * FROM primary_three_english_homework_uploads ORDER BY upload_date DESC;`;
     const result = await db.query(query);
 
-    res.render('upload-primary-one-eng-homework', {
+    res.render('upload-primary-three-eng', {
       uploadedHomework: result.rows, 
       success: req.query.success,
       userRole: req.session.role 
@@ -907,7 +907,7 @@ app.get('/download-sci-primary-three', isParent, async (req, res) => {
     const query = `SELECT * FROM primary_three_science_homework_uploads ORDER BY upload_date DESC;`;
     const result = await db.query(query);
 
-    res.render('upload-primary-one-sci-homework', {
+    res.render('upload-primary-three-sci', {
       uploadedHomework: result.rows, 
       success: req.query.success,
       userRole: req.session.role 
@@ -967,7 +967,7 @@ app.get('/download-sst-primary-three', isParent, async (req, res) => {
     const query = `SELECT * FROM primary_three_social_studies_homework_uploads ORDER BY upload_date DESC;`;
     const result = await db.query(query);
 
-    res.render('upload-primary-one-sst-homework', {
+    res.render('upload-primary-three-sst', {
       uploadedHomework: result.rows, 
       success: req.query.success,
       userRole: req.session.role 
@@ -1039,7 +1039,7 @@ app.get('/download-math-primary-four', isParent, async (req, res) => {
     const query = `SELECT * FROM primary_four_mathematics_homework_uploads ORDER BY upload_date DESC;`;
     const result = await db.query(query);
 
-    res.render('upload-primary-one-math-homework', {
+    res.render('upload-primary-four-math', {
       uploadedHomework: result.rows, 
       success: req.query.success,
       userRole: req.session.role 
@@ -1099,7 +1099,7 @@ app.get('/download-eng-primary-four', isParent, async (req, res) => {
     const query = `SELECT * FROM primary_four_english_homework_uploads ORDER BY upload_date DESC;`;
     const result = await db.query(query);
 
-    res.render('upload-primary-one-eng-homework', {
+    res.render('upload-primary-four-eng', {
       uploadedHomework: result.rows, 
       success: req.query.success,
       userRole: req.session.role 
@@ -1159,7 +1159,7 @@ app.get('/download-sci-primary-four', isParent, async (req, res) => {
     const query = `SELECT * FROM primary_four_science_homework_uploads ORDER BY upload_date DESC;`;
     const result = await db.query(query);
 
-    res.render('upload-primary-one-sci-homework', {
+    res.render('upload-primary-four-sci', {
       uploadedHomework: result.rows, 
       success: req.query.success,
       userRole: req.session.role 
@@ -1219,7 +1219,7 @@ app.get('/download-sst-primary-four', isParent, async (req, res) => {
     const query = `SELECT * FROM primary_four_social_studies_homework_uploads ORDER BY upload_date DESC;`;
     const result = await db.query(query);
 
-    res.render('upload-primary-one-sst-homework', {
+    res.render('upload-primary-four-sst', {
       uploadedHomework: result.rows, 
       success: req.query.success,
       userRole: req.session.role 
