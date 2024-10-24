@@ -1,18 +1,20 @@
 import express from "express";
 import bodyParser from "body-parser";
-import axios from "axios";
 import dotenv from "dotenv";
 import pg from "pg";
 import bcrypt from "bcrypt";
+import crypto from 'crypto';
 import multer from "multer";
 import session from 'express-session';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import postmark from 'postmark';
 
 dotenv.config();
 
 const port = 3000;
+// const host = '192.168.88.163';
 const app = express();
 
 const db = new pg.Client({
@@ -36,6 +38,7 @@ app.use(bodyParser.json());
 // Get the directory name of the current module
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
 
 // Define storage settings for multer
 const storage = multer.diskStorage({
@@ -62,6 +65,7 @@ const upload = multer({
   fileFilter: fileFilter,
 });
 
+//COOKIE SESSION
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
@@ -73,25 +77,28 @@ app.use(session({
 //MIDDLEWARE TO CHECK THE ROLE OF THE USER
 
 
-// Middleware to check if the user is a teacher
-function isTeacher(req, res, next) {
-  console.log("User role in session:", req.session.role);
-  if (req.session.role === 'teacher') {
-    return next();
-  } else {
-    return res.status(403).send('Access denied. Only teachers can upload homework.');
-  }
+// General role-checking middleware
+function hasRole(allowedRoles) {
+  return function (req, res, next) {
+    console.log("User role in session:", req.session.role);
+
+    // Check if the user's role is in the list of allowed roles
+    if (allowedRoles.includes(req.session.role)) {
+      return next();
+    } else {
+      return res.status(403).send('Access denied.');
+    }
+  };
 }
 
-// Middleware to check if the user is a parent
-function isParent(req, res, next) {
-  console.log("User role in session:", req.session.role);
-  if (req.session.role === 'parent') {
-    return next();
-  } else {
-    return res.status(403).send('Access denied.');
-  }
-}
+// Middleware to check if the user is a teacher (admin also has access)
+const isTeacher = hasRole(['teacher', 'admin']);
+
+// Middleware to check if the user is a parent (admin also has access)
+const isParent = hasRole(['parent', 'admin']);
+
+// Middleware to check if the user is an admin
+const isAdmin = hasRole(['admin']);
 
 
 // GET ROUTE FOR SIGN-UP
@@ -160,6 +167,8 @@ app.post('/login', async (req, res) => {
       return res.redirect('/teachers');
     } else if (req.session.role === 'parent') {
       return res.redirect('/parents');
+    } else if (req.session.role === 'admin') {
+      return res.redirect('/admin');
     } else {
       return res.status(400).send('User role not recognized.');
     }
@@ -1250,6 +1259,96 @@ app.post('/upload-sst-homework-primary-four', upload.single('homeworkFile'), asy
     res.redirect('/upload-sst-primary-four?success=true');
   } catch (err) {
     console.error('Error uploading homework:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+// ADMIN DASHBOARD
+
+// Function to generate a secure random password
+function generateSecurePassword() {
+  return crypto.randomBytes(6).toString('base64').replace(/[^a-zA-Z0-9]/g, '').slice(0, 12);
+}
+
+// GET ROUTE FOR PASSWORD GENERATION
+app.get('/generate-password', (req, res) => {
+  const password = generateSecurePassword();
+  res.json({ password });
+});
+
+// GET ROUTE FOR ADMIN DASHBOARD
+app.get('/admin', isAdmin, async (req, res) => {
+  try {
+    const result = await db.query('SELECT * FROM users');
+    const users = result.rows;
+
+    res.render('admin-dashboard', { users, generatedPassword: '' }); // No password initially
+  } catch (err) {
+    console.error('Error fetching users:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+// Initialize the Postmark client with your API key
+const client = new postmark.ServerClient(process.env.POSTMARK_API_KEY);
+
+// Function to send an email using Postmark
+function sendEmail(email, username, generatedPassword) {
+  const emailData = {
+    From: 'Your App <no-reply@yourdomain.com>', // Your verified sender email in Postmark
+    To: email, // The email address of the user
+    Subject: 'Your Login Details',
+    TextBody: `Hello ${username},\n\nHere are your login details:\n\nUsername: ${username}\nPassword: ${generatedPassword}\n\nFeel free to access our resources.`,
+    MessageStream: "outbound" // This is the default stream for Postmark, you can configure it as needed
+  };
+
+  client.sendEmail(emailData, (error, result) => {
+    if (error) {
+      console.error('Error sending email with Postmark:', error);
+    } else {
+      console.log('Email sent successfully:', result);
+    }
+  });
+}
+
+// POST route for adding a new user
+app.post('/admin/add-user', isAdmin, async (req, res) => {
+  const { username, role, email } = req.body;
+
+  // Generate a random password
+  const generatedPassword = generateSecurePassword();
+
+  try {
+    // Hash the generated password before saving to the DB
+    const hashedPassword = await bcrypt.hash(generatedPassword, 10);
+
+    // Save the user to the database
+    const query = `INSERT INTO users (username, role, password) VALUES ($1, $2, $3) RETURNING id;`;
+    const values = [username, role, hashedPassword];
+    await db.query(query, values);
+
+    // Send the email to the user using Postmark
+    sendEmail(email, username, generatedPassword);
+
+    // Redirect back to the admin dashboard
+    res.redirect('/admin');
+  } catch (err) {
+    console.error('Error adding user:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+// POST ROUTE TO DELETE A USER
+app.post('/admin/delete-user/:id', isAdmin, async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const query = 'DELETE FROM users WHERE id = $1';
+    await db.query(query, [userId]);
+
+    res.redirect('/admin');
+  } catch (err) {
+    console.error('Error deleting user:', err);
     res.status(500).send('Server error');
   }
 });
