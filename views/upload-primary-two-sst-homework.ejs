@@ -15,7 +15,7 @@
     <div class="wrapper">
         <div class="title">Social Studies Homework (P.2)</div>
         
-        <% if (userRole === 'teacher') { %>
+        <% if (userRole === 'teacher' || userRole === 'admin') { %>
             <form id="uploadForm" action="/upload-sst-homework-primary-two" method="POST" enctype="multipart/form-data">
                 <div class="row">
                     <i class="fa fa-calendar"></i>
@@ -37,7 +37,7 @@
             <div class="alert alert-success">Homework uploaded successfully!</div>
         <% } %>
 
-        <% if (userRole === 'parent' || userRole === 'teacher') { %>
+        <% if (userRole === 'parent' || userRole === 'teacher' || userRole === 'admin') { %>
             <div class="download-list">
                 <h3>Uploaded Homework List</h3>
                 <% if (uploadedHomework.length > 0) { %>
