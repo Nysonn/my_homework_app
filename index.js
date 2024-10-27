@@ -9,7 +9,7 @@ import session from 'express-session';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
-import postmark from 'postmark';
+import nodemailer from 'nodemailer';
 
 dotenv.config();
 
@@ -1289,24 +1289,29 @@ app.get('/admin', isAdmin, async (req, res) => {
   }
 });
 
-// Initialize the Postmark client with your API key
-const client = new postmark.ServerClient(process.env.POSTMARK_API_KEY);
+// Set up Nodemailer transporter with Gmail using .env variables
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.GMAIL_USER, // Gmail address from .env
+    pass: process.env.GMAIL_PASS, // Gmail App Password from .env
+  },
+});
 
-// Function to send an email using Postmark
+// Function to send an email using Nodemailer
 function sendEmail(email, username, generatedPassword) {
-  const emailData = {
-    From: 'Your App <no-reply@yourdomain.com>', // Your verified sender email in Postmark
-    To: email, // The email address of the user
-    Subject: 'Your Login Details',
-    TextBody: `Hello ${username},\n\nHere are your login details:\n\nUsername: ${username}\nPassword: ${generatedPassword}\n\nFeel free to access our resources.`,
-    MessageStream: "outbound" // This is the default stream for Postmark, you can configure it as needed
+  const mailOptions = {
+    from: '"Your App" <' + process.env.GMAIL_USER + '>', // Sender address
+    to: email, // Recipient's email
+    subject: 'Your Login Details',
+    text: `Hello ${username},\n\nHere are your login details:\n\nUsername: ${username}\nPassword: ${generatedPassword}\n\nFeel free to access our resources.`,
   };
 
-  client.sendEmail(emailData, (error, result) => {
+  transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      console.error('Error sending email with Postmark:', error);
+      console.error('Error sending email with Nodemailer:', error);
     } else {
-      console.log('Email sent successfully:', result);
+      console.log('Email sent successfully:', info.response);
     }
   });
 }
@@ -1327,7 +1332,7 @@ app.post('/admin/add-user', isAdmin, async (req, res) => {
     const values = [username, role, hashedPassword];
     await db.query(query, values);
 
-    // Send the email to the user using Postmark
+    // Send the email to the user using Nodemailer
     sendEmail(email, username, generatedPassword);
 
     // Redirect back to the admin dashboard
