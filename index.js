@@ -70,9 +70,9 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
+  rolling: true, // Reset expiration on each request
   cookie: { maxAge: 60 * 60 * 1000 } // 1 hour
 }));
-
 
 //MIDDLEWARE TO CHECK THE ROLE OF THE USER
 
@@ -1373,6 +1373,128 @@ app.post('/admin/delete-user/:id', isAdmin, async (req, res) => {
     res.status(500).send('Server error');
   }
 });
+
+//SUBJECT RESOURCES PRIMARY ONE
+
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY ONE MATH
+app.get('/subjectresources-primary-one-math', isTeacher, async (req, res) => {
+  res.render('subjectresources-primary-one-math', {
+    userRole: req.session.role
+  }); 
+});
+
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY ONE ENG
+app.get('/subjectresources-primary-one-eng', isTeacher, async (req, res) => {
+  res.render('subjectresources-primary-one-eng', {
+    userRole: req.session.role
+  }); 
+});
+
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY ONE SCI
+app.get('/subjectresources-primary-one-sci', isTeacher, async (req, res) => {
+  res.render('subjectresources-primary-one-sci', {
+    userRole: req.session.role
+  }); 
+});
+
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY ONE SST
+app.get('/subjectresources-primary-one-sst', isTeacher, async (req, res) => {
+  res.render('subjectresources-primary-one-sst', {
+    userRole: req.session.role
+  }); 
+});
+
+
+//SUBJECT RESOURCES PRIMARY TWO
+
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY TWO MATH
+app.get('/subjectresources-primary-two-math', isTeacher, async (req, res) => {
+  res.render('subjectresources-primary-two-math', {
+    userRole: req.session.role
+  }); 
+});
+
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY TWO ENG
+app.get('/subjectresources-primary-two-eng', isTeacher, async (req, res) => {
+  res.render('subjectresources-primary-two-eng', {
+    userRole: req.session.role
+  }); 
+});
+
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY TWO SCI
+app.get('/subjectresources-primary-two-sci', isTeacher, async (req, res) => {
+  res.render('subjectresources-primary-two-sci', {
+    userRole: req.session.role
+  }); 
+});
+
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY TWO SST
+app.get('/subjectresources-primary-two-sst', isTeacher, async (req, res) => {
+  res.render('subjectresources-primary-two-sst', {
+    userRole: req.session.role
+  }); 
+});
+
+//SUBJECT RESOURCES PRIMARY THREE
+
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY THREE MATH
+app.get('/subjectresources-primary-three-math', isTeacher, async (req, res) => {
+  res.render('subjectresources-primary-three-math', {
+    userRole: req.session.role
+  }); 
+});
+
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY THREE ENG
+app.get('/subjectresources-primary-three-eng', isTeacher, async (req, res) => {
+  res.render('subjectresources-primary-three-eng', {
+    userRole: req.session.role
+  }); 
+});
+
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY THREE SCI
+app.get('/subjectresources-primary-three-sci', isTeacher, async (req, res) => {
+  res.render('subjectresources-primary-three-sci', {
+    userRole: req.session.role
+  }); 
+});
+
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY THREE SST
+app.get('/subjectresources-primary-three-sst', isTeacher, async (req, res) => {
+  res.render('subjectresources-primary-three-sst', {
+    userRole: req.session.role
+  }); 
+});
+
+//SUBJECT RESOURCES PRIMARY FOUR
+
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY FOUR MATH
+app.get('/subjectresources-primary-four-math', isTeacher, async (req, res) => {
+  res.render('subjectresources-primary-four-math', {
+    userRole: req.session.role
+  }); 
+});
+
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY FOUR ENG
+app.get('/subjectresources-primary-four-eng', isTeacher, async (req, res) => {
+  res.render('subjectresources-primary-four-eng', {
+    userRole: req.session.role
+  }); 
+});
+
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY FOUR SCI
+app.get('/subjectresources-primary-four-sci', isTeacher, async (req, res) => {
+  res.render('subjectresources-primary-four-sci', {
+    userRole: req.session.role
+  }); 
+});
+
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY FOUR SST
+app.get('/subjectresources-primary-four-sst', isTeacher, async (req, res) => {
+  res.render('subjectresources-primary-four-sst', {
+    userRole: req.session.role
+  }); 
+});
+
 
 // START THE SERVER
 app.listen(port, () => {

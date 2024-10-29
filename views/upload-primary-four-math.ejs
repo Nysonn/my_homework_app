@@ -12,6 +12,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
+    <!-- Navbar section -->
+  <div class="navbar">
+    <h1>Teacher Dashboard</h1>
+    <% if (userRole === 'admin') { %>
+    <ul>
+      <li><a href="/admin">Admin</a></li>
+      <li><a href="/teachers">Teachers</a></li>
+      <li><a href="/parents">Parents</a></li>
+    </ul>
+    <% } else { %>
+      <!-- Nothing -->
+      <% } %>
+  </div>
+  
     <div class="wrapper">
         <div class="title"> Mathematics Homework (P.4)</div>
         
