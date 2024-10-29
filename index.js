@@ -256,13 +256,17 @@ app.post('/download-homework', (req, res) => {
 
 
 //GET ROUTE FOR PRIMARY ONE SELECT SUBJECTS (TEACHERS)
-app.get('/primary-one-subjects-select', async (req, res) => {
-  res.render('primary-one'); 
+app.get('/primary-one-subjects-select',isTeacher, async (req, res) => {
+  res.render('primary-one', {
+    userRole: req.session.role
+  });
 });
 
 //GET ROUTE FOR PRIMARY ONE SELECT SUBJECTS (PARENTS)
-app.get('/primary-one-subjects-select-parents', async (req, res) => {
-  res.render('download-primary-one'); 
+app.get('/primary-one-subjects-select-parents', isParent ,async (req, res) => {
+  res.render('download-primary-one', {
+    userRole: req.session.role
+  }); 
 });
 
 //GET ROUTE FOR PRIMARY ONE MATH UPLOAD HOMEWORK (TEACHERS)
@@ -508,14 +512,18 @@ app.post('/upload-sst-homework', upload.single('homeworkFile'), async (req, res)
 
 // PRIMARY TWO TEACHERS UPLOAD ROUTES FOR ALL FOUR SUBJECTS
 
-//GET ROUTE FOR PRIMARY TWO SELECT SUBJECTS
-app.get('/primary-two-subjects-select', async (req, res) => {
-  res.render('primary-two'); 
+//GET ROUTE FOR PRIMARY TWO SELECT SUBJECTS(TEACHERS)
+app.get('/primary-two-subjects-select', isTeacher, async (req, res) => {
+  res.render('primary-two', {
+    userRole: req.session.role
+  }); 
 });
 
 //GET ROUTE FOR PRIMARY TWO SELECT SUBJECTS (PARENTS)
-app.get('/primary-two-subjects-select-parents', async (req, res) => {
-  res.render('download-primary-two'); 
+app.get('/primary-two-subjects-select-parents',isParent, async (req, res) => {
+  res.render('download-primary-two', {
+    userRole: req.session.role
+  }); 
 });
 
 //GET ROUTE FOR PRIMARY TWO ENGLISH UPLOAD HOMEWORK
@@ -761,14 +769,18 @@ app.post('/upload-sst-homework-primary-two', upload.single('homeworkFile'), asyn
 
 // PRIMARY THREE TEACHERS UPLOAD ROUTES FOR ALL FOUR SUBJECTS
 
-//GET ROUTE FOR PRIMARY THREE SELECT SUBJECTS
-app.get('/primary-three-subjects-select', async (req, res) => {
-  res.render('primary-three'); 
+//GET ROUTE FOR PRIMARY THREE SELECT SUBJECTS(TEACHERS)
+app.get('/primary-three-subjects-select', isTeacher, async (req, res) => {
+  res.render('primary-three', {
+    userRole: req.session.role
+  }); 
 });
 
 //GET ROUTE FOR PRIMARY THREE SELECT SUBJECTS (PARENTS)
-app.get('/primary-three-subjects-select-parents', async (req, res) => {
-  res.render('download-primary-three'); 
+app.get('/primary-three-subjects-select-parents', isParent, async (req, res) => {
+  res.render('download-primary-three', {
+    userRole: req.session.role
+  }); 
 });
 
 //GET ROUTE FOR PRIMARY THREE MATHEMATICS UPLOAD HOMEWORK
@@ -1013,14 +1025,18 @@ app.post('/upload-sst-homework-primary-three', upload.single('homeworkFile'), as
 
 // PRIMARY FOUR TEACHERS UPLOAD ROUTES FOR ALL FOUR SUBJECTS
 
-//GET ROUTE FOR PRIMARY FOUR SELECT SUBJECTS
-app.get('/primary-four-subjects-select', async (req, res) => {
-  res.render('primary-four'); 
+//GET ROUTE FOR PRIMARY FOUR SELECT SUBJECTS (TEACHERS)
+app.get('/primary-four-subjects-select', isTeacher, async (req, res) => {
+  res.render('primary-four', {
+    userRole: req.session.role
+  }); 
 });
 
 //GET ROUTE FOR PRIMARY FOUR SELECT SUBJECTS (PARENTS)
-app.get('/primary-four-subjects-select-parents', async (req, res) => {
-  res.render('download-primary-four'); 
+app.get('/primary-four-subjects-select-parents', isParent, async (req, res) => {
+  res.render('download-primary-four', {
+    userRole: req.session.role
+  }); 
 });
 
 //GET ROUTE FOR PRIMARY FOUR MATHEMATICS UPLOAD HOMEWORK
