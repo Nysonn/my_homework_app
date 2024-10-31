@@ -1376,30 +1376,58 @@ app.post('/admin/delete-user/:id', isAdmin, async (req, res) => {
 
 //SUBJECT RESOURCES PRIMARY ONE
 
-//GET ROUTE FOR SUBJECT RESOURCES PRIMARY ONE MATH
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY ONE MATH (TEACHERS)
 app.get('/subjectresources-primary-one-math', isTeacher, async (req, res) => {
   res.render('subjectresources-primary-one-math', {
     userRole: req.session.role
   }); 
 });
 
-//GET ROUTE FOR SUBJECT RESOURCES PRIMARY ONE ENG
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY ONE MATH (PARENTS)
+app.get('/subjectresources-primary-one-math-parent', isParent, async (req, res) => {
+  res.render('sub-res-pri-one-math-parent', {
+    userRole: req.session.role
+  }); 
+});
+
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY ONE ENG (TEACHERS)
 app.get('/subjectresources-primary-one-eng', isTeacher, async (req, res) => {
   res.render('subjectresources-primary-one-eng', {
     userRole: req.session.role
   }); 
 });
 
-//GET ROUTE FOR SUBJECT RESOURCES PRIMARY ONE SCI
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY ONE ENG (PARENTS)
+app.get('/subjectresources-primary-one-eng-parent', isParent, async (req, res) => {
+  res.render('sub-res-pri-one-eng-parent', {
+    userRole: req.session.role
+  }); 
+});
+
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY ONE SCI (TEACHERS)
 app.get('/subjectresources-primary-one-sci', isTeacher, async (req, res) => {
   res.render('subjectresources-primary-one-sci', {
     userRole: req.session.role
   }); 
 });
 
-//GET ROUTE FOR SUBJECT RESOURCES PRIMARY ONE SST
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY ONE SCI (PARENTS)
+app.get('/subjectresources-primary-one-sci-parent', isParent, async (req, res) => {
+  res.render('sub-res-pri-one-sci-parent', {
+    userRole: req.session.role
+  }); 
+});
+
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY ONE SST (TEACHERS)
 app.get('/subjectresources-primary-one-sst', isTeacher, async (req, res) => {
   res.render('subjectresources-primary-one-sst', {
+    userRole: req.session.role
+  }); 
+});
+
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY ONE SST (PARENTS)
+app.get('/subjectresources-primary-one-sst-parent', isParent, async (req, res) => {
+  res.render('sub-res-pri-one-sst-parent', {
     userRole: req.session.role
   }); 
 });
@@ -1407,90 +1435,174 @@ app.get('/subjectresources-primary-one-sst', isTeacher, async (req, res) => {
 
 //SUBJECT RESOURCES PRIMARY TWO
 
-//GET ROUTE FOR SUBJECT RESOURCES PRIMARY TWO MATH
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY TWO MATH (TEACHERS)
 app.get('/subjectresources-primary-two-math', isTeacher, async (req, res) => {
   res.render('subjectresources-primary-two-math', {
     userRole: req.session.role
   }); 
 });
 
-//GET ROUTE FOR SUBJECT RESOURCES PRIMARY TWO ENG
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY TWO MATH (PARENTS)
+app.get('/subjectresources-primary-two-math-parent', isParent, async (req, res) => {
+  res.render('sub-res-pri-two-math-parent', {
+    userRole: req.session.role
+  }); 
+});
+
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY TWO ENG (TEACHERS)
 app.get('/subjectresources-primary-two-eng', isTeacher, async (req, res) => {
   res.render('subjectresources-primary-two-eng', {
     userRole: req.session.role
   }); 
 });
 
-//GET ROUTE FOR SUBJECT RESOURCES PRIMARY TWO SCI
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY TWO ENG (PARENTS)
+app.get('/subjectresources-primary-two-eng-parent', isParent, async (req, res) => {
+  res.render('sub-res-pri-two-eng-parent', {
+    userRole: req.session.role
+  }); 
+});
+
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY TWO SCI (TEACHERS)
 app.get('/subjectresources-primary-two-sci', isTeacher, async (req, res) => {
   res.render('subjectresources-primary-two-sci', {
     userRole: req.session.role
   }); 
 });
 
-//GET ROUTE FOR SUBJECT RESOURCES PRIMARY TWO SST
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY TWO SCI (PARENTS)
+app.get('/subjectresources-primary-two-sci-parent', isParent, async (req, res) => {
+  res.render('sub-res-pri-two-sci-parent', {
+    userRole: req.session.role
+  }); 
+});
+
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY TWO SST (TEACHERS)
 app.get('/subjectresources-primary-two-sst', isTeacher, async (req, res) => {
   res.render('subjectresources-primary-two-sst', {
     userRole: req.session.role
   }); 
 });
 
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY TWO SST (PARENTS)
+app.get('/subjectresources-primary-two-sst-parent', isParent, async (req, res) => {
+  res.render('sub-res-pri-two-sst-parent', {
+    userRole: req.session.role
+  }); 
+});
+
 //SUBJECT RESOURCES PRIMARY THREE
 
-//GET ROUTE FOR SUBJECT RESOURCES PRIMARY THREE MATH
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY THREE MATH (TEACHERS)
 app.get('/subjectresources-primary-three-math', isTeacher, async (req, res) => {
   res.render('subjectresources-primary-three-math', {
     userRole: req.session.role
   }); 
 });
 
-//GET ROUTE FOR SUBJECT RESOURCES PRIMARY THREE ENG
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY THREE MATH (PARENTS)
+app.get('/subjectresources-primary-three-math-parent', isParent, async (req, res) => {
+  res.render('sub-res-pri-three-math-parent', {
+    userRole: req.session.role
+  }); 
+});
+
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY THREE ENG (TEACHERS)
 app.get('/subjectresources-primary-three-eng', isTeacher, async (req, res) => {
   res.render('subjectresources-primary-three-eng', {
     userRole: req.session.role
   }); 
 });
 
-//GET ROUTE FOR SUBJECT RESOURCES PRIMARY THREE SCI
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY THREE ENG (PARENTS)
+app.get('/subjectresources-primary-three-eng-parent', isParent, async (req, res) => {
+  res.render('sub-res-pri-three-eng-parent', {
+    userRole: req.session.role
+  }); 
+});
+
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY THREE SCI (TEACHERS)
 app.get('/subjectresources-primary-three-sci', isTeacher, async (req, res) => {
   res.render('subjectresources-primary-three-sci', {
     userRole: req.session.role
   }); 
 });
 
-//GET ROUTE FOR SUBJECT RESOURCES PRIMARY THREE SST
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY THREE SCI (PARENTS)
+app.get('/subjectresources-primary-three-sci-parent', isParent, async (req, res) => {
+  res.render('sub-res-pri-three-sci-parent', {
+    userRole: req.session.role
+  }); 
+});
+
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY THREE SST (TEACHERS)
 app.get('/subjectresources-primary-three-sst', isTeacher, async (req, res) => {
   res.render('subjectresources-primary-three-sst', {
     userRole: req.session.role
   }); 
 });
 
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY THREE SST (PARENTS)
+app.get('/subjectresources-primary-three-sst-parent', isParent, async (req, res) => {
+  res.render('sub-res-pri-three-sst-parent', {
+    userRole: req.session.role
+  }); 
+});
+
 //SUBJECT RESOURCES PRIMARY FOUR
 
-//GET ROUTE FOR SUBJECT RESOURCES PRIMARY FOUR MATH
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY FOUR MATH (TEACHERS)
 app.get('/subjectresources-primary-four-math', isTeacher, async (req, res) => {
   res.render('subjectresources-primary-four-math', {
     userRole: req.session.role
   }); 
 });
 
-//GET ROUTE FOR SUBJECT RESOURCES PRIMARY FOUR ENG
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY FOUR MATH (PARENTS)
+app.get('/subjectresources-primary-four-math-parent', isParent, async (req, res) => {
+  res.render('sub-res-pri-four-math-parent', {
+    userRole: req.session.role
+  }); 
+});
+
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY FOUR ENG (TEACHERS)
 app.get('/subjectresources-primary-four-eng', isTeacher, async (req, res) => {
   res.render('subjectresources-primary-four-eng', {
     userRole: req.session.role
   }); 
 });
 
-//GET ROUTE FOR SUBJECT RESOURCES PRIMARY FOUR SCI
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY FOUR ENG (PARENTS)
+app.get('/subjectresources-primary-four-eng-parent', isParent, async (req, res) => {
+  res.render('sub-res-pri-four-eng-parent', {
+    userRole: req.session.role
+  }); 
+});
+
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY FOUR SCI (TEACHERS)
 app.get('/subjectresources-primary-four-sci', isTeacher, async (req, res) => {
   res.render('subjectresources-primary-four-sci', {
     userRole: req.session.role
   }); 
 });
 
-//GET ROUTE FOR SUBJECT RESOURCES PRIMARY FOUR SST
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY FOUR SCI (PARENTS)
+app.get('/subjectresources-primary-four-sci-parent', isParent, async (req, res) => {
+  res.render('sub-res-pri-four-sci-parent', {
+    userRole: req.session.role
+  }); 
+});
+
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY FOUR SST (TEACHERS)
 app.get('/subjectresources-primary-four-sst', isTeacher, async (req, res) => {
   res.render('subjectresources-primary-four-sst', {
+    userRole: req.session.role
+  }); 
+});
+
+//GET ROUTE FOR SUBJECT RESOURCES PRIMARY FOUR SST (PARENTS)
+app.get('/subjectresources-primary-four-sst-parent', isParent, async (req, res) => {
+  res.render('sub-res-pri-four-sst-parent', {
     userRole: req.session.role
   }); 
 });

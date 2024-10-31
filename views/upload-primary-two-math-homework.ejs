@@ -6,26 +6,34 @@
     <link rel="stylesheet" href="/upload-primary-one-math-homework.css">
     <% if (userRole === 'teacher') { %>
         <title>Upload Mathematics (Primary Two)</title>
-    <% } else { %>
-        <title>Download Mathematics (Primary Two)</title>
-    <% } %>
+        <% } else if (userRole === 'admin') { %>
+            <title>Admin Access</title>
+        <% } else { %>
+            <title>Download Mathematics (Primary Two)</title>
+        <% } %>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
 
       <!-- Navbar section -->
-  <div class="navbar">
-    <h1>Teacher Dashboard</h1>
-    <% if (userRole === 'admin') { %>
-    <ul>
-      <li><a href="/admin">Admin</a></li>
-      <li><a href="/teachers">Teachers</a></li>
-      <li><a href="/parents">Parents</a></li>
-    </ul>
-    <% } else { %>
-      <!-- Nothing -->
-      <% } %>
-  </div>
+      <div class="navbar">
+        <% if (userRole === 'admin') { %>
+            <h1>Admin Dashboard</h1>
+        <% } else if (userRole === 'teacher') { %>
+            <h1>Teacher Dashboard</h1>
+        <% } else { %>
+            <h1>Parent Dashboard</h1>
+        <% } %>    
+        <% if (userRole === 'admin') { %>
+        <ul>
+          <li><a href="/admin">Admin</a></li>
+          <li><a href="/teachers">Teachers</a></li>
+          <li><a href="/parents">Parents</a></li>
+        </ul>
+        <% } else { %>
+          <!-- Nothing -->
+          <% } %>
+      </div>
 
   
     <div class="wrapper">

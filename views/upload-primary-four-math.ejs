@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="/upload-primary-one-math-homework.css">
     <% if (userRole === 'teacher') { %>
         <title>Upload Mathematics (Primary Four)</title>
+        <% } else if (userRole === 'admin') { %>
+            <title>Admin Access</title>
     <% } else { %>
         <title>Download Mathematics (Primary Four)</title>
     <% } %>
@@ -14,7 +16,13 @@
 <body>
     <!-- Navbar section -->
   <div class="navbar">
-    <h1>Teacher Dashboard</h1>
+    <% if (userRole === 'admin') { %>
+        <h1>Admin Dashboard</h1>
+    <% } else if (userRole === 'teacher') { %>
+        <h1>Teacher Dashboard</h1>
+    <% } else { %>
+        <h1>Parent Dashboard</h1>
+    <% } %>    
     <% if (userRole === 'admin') { %>
     <ul>
       <li><a href="/admin">Admin</a></li>

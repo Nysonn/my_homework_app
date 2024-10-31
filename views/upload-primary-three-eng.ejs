@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="/upload-primary-one-math-homework.css">
     <% if (userRole === 'teacher') { %>
         <title>Upload English (Primary Three)</title>
+        <% } else if (userRole === 'admin') { %>
+            <title>Admin Access</title>
     <% } else { %>
         <title>Download English (Primary Three)</title>
     <% } %>
@@ -13,18 +15,24 @@
 </head>
 <body>
     <!-- Navbar section -->
-  <div class="navbar">
-    <h1>Teacher Dashboard</h1>
-    <% if (userRole === 'admin') { %>
-    <ul>
-      <li><a href="/admin">Admin</a></li>
-      <li><a href="/teachers">Teachers</a></li>
-      <li><a href="/parents">Parents</a></li>
-    </ul>
-    <% } else { %>
-      <!-- Nothing -->
-      <% } %>
-  </div>
+    <div class="navbar">
+        <% if (userRole === 'admin') { %>
+            <h1>Admin Dashboard</h1>
+        <% } else if (userRole === 'teacher') { %>
+            <h1>Teacher Dashboard</h1>
+        <% } else { %>
+            <h1>Parent Dashboard</h1>
+        <% } %>    
+        <% if (userRole === 'admin') { %>
+        <ul>
+          <li><a href="/admin">Admin</a></li>
+          <li><a href="/teachers">Teachers</a></li>
+          <li><a href="/parents">Parents</a></li>
+        </ul>
+        <% } else { %>
+          <!-- Nothing -->
+          <% } %>
+      </div>
   
     <div class="wrapper">
         <div class="title"> English Homework (P.3)</div>
