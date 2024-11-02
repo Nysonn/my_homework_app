@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Q&A Session - Math</title>
+  <link rel="stylesheet" href="/liveqa.css">
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <div class="navbar">
+    <h1>Live Q&A - Mathematics</h1>
+    <% if (userRole === 'admin') { %>
+      <ul>
+        <li><a href="/admin">Admin</a></li>
+        <li><a href="/teachers">Teachers</a></li>
+        <li><a href="/parents">Parents</a></li>
+      </ul>
+    <% } %>
+  </div>
+
+  <div class="container">
+    <% if (!tokens) { %>
+      <div class="auth-button-container">
+        <a href="/auth/google" class="auth-button">Authenticate with Google</a>
+      </div>
+    <% } else { %>
+      <% if (userRole === 'teacher') { %>
+        <div class="schedule-form">
+          <h2>Schedule a Q&A Session</h2>
+          <form action="/schedule-session" method="POST">
+            <label for="sessionTitle">Session Title:</label>
+            <input type="text" id="sessionTitle" name="sessionTitle" required>
+            <label for="sessionDate">Date:</label>
+            <input type="date" id="sessionDate" name="sessionDate" required>
+            <label for="sessionTime">Time:</label>
+            <input type="time" id="sessionTime" name="sessionTime" required>
+            <label for="sessionDuration">Duration (in minutes):</label>
+            <input type="number" id="sessionDuration" name="sessionDuration" required min="1">
+            <button type="submit">Schedule Session</button>
+          </form>
+        </div>
+      <% } %>
+    <% } %>
+
+    <div class="session-list">
+      <h2>Scheduled Sessions</h2>
+      <% if (sessions.length > 0) { %>
+        <% sessions.forEach(session => { %>
+          <div class="session-card">
+            <h3>Session Title: <%= session.title %></h3>
+            <h4>Session Date: <%= session.date %> at <%= session.time %></h4>
+            <% if (session.isLive) { %>
+              <h4>Live Session</h4>
+              <a href="<%= session.link %>" target="_blank" class="join-button">Join Session</a>
+            <% } else { %>
+              <p>Session scheduled for future</p>
+              <p><strong>Join Link:</strong> <a href="<%= session.link %>" target="_blank"><%= session.link %></a></p>
+            <% } %>
+          </div>
+        <% }); %>
+      <% } else { %>
+        <p>No sessions scheduled yet.</p>
+      <% } %>
+    </div>
+  </div>
+
+  <script>
+    const socket = io();
+    socket.on('sessionScheduled', (session) => location.reload());
+    socket.on('sessionStarted', (session) => {
+      alert(`The session "${session.title}" is now live!`);
+      location.reload();
+    });
+  </script>
+</body>
+</html>

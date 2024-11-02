@@ -10,6 +10,7 @@ import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import nodemailer from 'nodemailer';
+import { google } from 'googleapis';
 
 dotenv.config();
 
@@ -1317,7 +1318,7 @@ const transporter = nodemailer.createTransport({
 // Function to send an email using Nodemailer
 function sendEmail(email, username, generatedPassword) {
   const mailOptions = {
-    from: '"Your App" <' + process.env.GMAIL_USER + '>', // Sender address
+    from: '"School Portal" <' + process.env.GMAIL_USER + '>', // Sender address
     to: email, // Recipient's email
     subject: 'Your Login Details',
     text: `Hello ${username},\n\nHere are your login details:\n\nUsername: ${username}\nPassword: ${generatedPassword}\n\nFeel free to access our resources.`,
@@ -1607,6 +1608,135 @@ app.get('/subjectresources-primary-four-sst-parent', isParent, async (req, res) 
   }); 
 });
 
+//LIVE Q&A SESSIONS
+
+import http from 'http';
+import { Server } from 'socket.io';
+
+const server = http.createServer(app);
+const io = new Server(server); // Create a new socket.io server instance
+
+let sessions = [];
+
+// Socket.IO connection event
+io.on('connection', (socket) => {
+  console.log('A user connected');
+});
+
+// Google OAuth 2.0 setup
+const oAuth2Client = new google.auth.OAuth2(
+  process.env.GOOGLE_CLIENT_ID,
+  process.env.GOOGLE_CLIENT_SECRET,
+  process.env.GOOGLE_REDIRECT_URI
+);
+
+//GET ROUTE FOR LIVE PRIMARY ONE MATH
+app.get('/live-primary-one-math', async (req, res) => {
+  const userRole = req.session.role;
+  const tokens = req.session.tokens;
+
+  try {
+    const result = await db.query('SELECT * FROM sessions ORDER BY date, time');
+    const sessions = result.rows.map(session => {
+      const sessionDateTime = new Date(`${session.date}T${session.time}`);
+      const currentDate = new Date();
+      session.isLive = currentDate >= sessionDateTime && currentDate < new Date(sessionDateTime.getTime() + session.duration * 60 * 1000);
+      return session;
+    });
+
+    res.render('live-primary-one-math', { userRole, sessions, tokens });
+  } catch (error) {
+    console.error('Error fetching sessions:', error);
+    res.status(500).send('Error loading sessions');
+  }
+});
+
+
+// Route to initiate Google OAuth authentication
+app.get('/auth/google', (req, res) => {
+  const authUrl = oAuth2Client.generateAuthUrl({
+    access_type: 'offline',
+    scope: ['https://www.googleapis.com/auth/calendar.events'],
+  });
+  res.redirect(authUrl);
+});
+
+// Callback for Google authentication
+app.get('/auth/google/callback', async (req, res) => {
+  const { code } = req.query;
+  
+  try {
+    const { tokens } = await oAuth2Client.getToken(code);
+    oAuth2Client.setCredentials(tokens);
+    req.session.tokens = tokens; // Save tokens in session for further authenticated requests
+    res.redirect('/live-primary-one-math');
+  } catch (error) {
+    console.error('Error retrieving access token', error);
+    res.status(500).send('Authentication failed');
+  }
+});
+
+// Route to handle session scheduling (POST)
+app.post('/schedule-session', async (req, res) => {
+  const { sessionDate, sessionTime, sessionDuration, sessionTitle } = req.body;
+
+  // Ensure credentials are set
+  const tokens = req.session.tokens;
+  if (tokens) {
+    oAuth2Client.setCredentials(tokens);
+  } else {
+    return res.status(403).send('User not authenticated.');
+  }
+
+  const startTime = new Date(`${sessionDate}T${sessionTime}:00`);
+  const endTime = new Date(startTime.getTime() + sessionDuration * 60 * 1000); // sessionDuration in minutes
+
+  const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
+
+  const event = {
+    summary: sessionTitle,
+    start: { dateTime: startTime.toISOString(), timeZone: 'America/Los_Angeles' },
+    end: { dateTime: endTime.toISOString(), timeZone: 'America/Los_Angeles' },
+    conferenceData: { createRequest: { requestId: "some-random-string", conferenceSolutionKey: { type: "hangoutsMeet" } } }
+  };
+
+  try {
+    const response = await calendar.events.insert({
+      calendarId: 'primary',
+      resource: event,
+      conferenceDataVersion: 1, // Required for conference data
+    });
+
+    const sessionLink = response.data.hangoutLink;
+
+    // Save the session in the database
+    const query = `
+      INSERT INTO sessions (title, date, time, duration, link, is_live)
+      VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`;
+    const values = [sessionTitle, sessionDate, sessionTime, sessionDuration, sessionLink, false];
+
+    const result = await db.query(query, values); // Assuming db is your database instance
+    console.log('Session saved:', result.rows[0]);
+
+    res.redirect('/live-primary-one-math');
+  } catch (error) {
+    console.error('Error creating event:', error);
+    res.status(500).send('Error scheduling session');
+  }
+});
+
+
+// Function to periodically check for live sessions
+setInterval(() => {
+  const currentDate = new Date();
+  sessions.forEach(session => {
+    const sessionDateTime = new Date(`${session.date}T${session.time}`);
+    if (currentDate >= sessionDateTime && currentDate < new Date(sessionDateTime.getTime() + 60 * 60 * 1000) && !session.isLive) {
+      session.isLive = true;
+      io.emit('sessionStarted', session); // Notify clients when the session goes live
+    }
+  });
+}, 60000); // Check every minute
 
 // START THE SERVER
 app.listen(port, () => {
